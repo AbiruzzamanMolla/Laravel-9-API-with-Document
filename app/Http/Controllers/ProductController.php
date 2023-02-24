@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Product;
 use App\Http\Requests\StoreProductRequest;
 use App\Http\Requests\UpdateProductRequest;
+use App\Repositories\ProductRepository;
 use App\Traits\ResponseTrait;
 use Exception;
 use Illuminate\Http\JsonResponse;
@@ -12,17 +12,48 @@ use Illuminate\Http\JsonResponse;
 class ProductController extends Controller
 {
     use ResponseTrait;
+
+    public $productRepository;
+
+    public function __construct(ProductRepository $productRepository)
+    {
+        $this->productRepository = $productRepository;
+    }
+
+
     /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
+     * @OA\Get(
+     *     path="/api/products",
+     *     tags={"Products"},
+     *     summary="Get All Product for restful api",
+     *     description="Multiple status values can be provided with comma separated string",
+     *     operationId="index",
+     *     @OA\Parameter(
+     *         name="status",
+     *         in="query",
+     *         description="Status values that needed to be considered for filter",
+     *         required=true,
+     *         explode=true,
+     *         @OA\Schema(
+     *             default="available",
+     *             type="string",
+     *             enum={"available", "pending", "sold"},
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="successful operation"
+     *     ),
+     *     @OA\Response(
+     *         response=400,
+     *         description="Invalid status value"
+     *     )
+     * )
      */
     public function index(): JsonResponse
     {
         try {
-            $products = Product::all();
-
-            return $this->responseSuccess($products, 'Product fetched successfully.');
+            return $this->responseSuccess($this->productRepository->getAll(), 'Product fetched successfully.');
         } catch (Exception $e) {
             return $this->responseError(null, 'Something went wrong.', $e->getMessage());
         }
