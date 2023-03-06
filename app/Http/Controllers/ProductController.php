@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreProductRequest;
 use App\Http\Requests\UpdateProductRequest;
+use App\Models\Product;
 use App\Repositories\ProductRepository;
 use App\Traits\ResponseTrait;
 use Exception;
