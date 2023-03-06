@@ -5,3 +5,6 @@
 - composer install
 - php artisan generate:key
 - php artisan serve
+
+#### To Generate Documentation
+- php artisan l5-swagger:generate

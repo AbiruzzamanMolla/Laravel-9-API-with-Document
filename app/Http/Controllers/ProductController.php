@@ -8,6 +8,7 @@ use App\Repositories\ProductRepository;
 use App\Traits\ResponseTrait;
 use Exception;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 
 class ProductController extends Controller
 {
@@ -26,18 +27,17 @@ class ProductController extends Controller
      *     path="/api/products",
      *     tags={"Products"},
      *     summary="Get All Product for restful api",
-     *     description="Multiple status values can be provided with comma separated string",
+     *     description="Get all the products with pagination through perPage parameter",
      *     operationId="index",
      *     @OA\Parameter(
-     *         name="status",
+     *         name="perPage",
      *         in="query",
-     *         description="Status values that needed to be considered for filter",
-     *         required=true,
+     *         description="Enter Par Page Product counts",
+     *         required=false,
      *         explode=true,
      *         @OA\Schema(
-     *             default="available",
-     *             type="string",
-     *             enum={"available", "pending", "sold"},
+     *             default="10",
+     *             type="integer",
      *         )
      *     ),
      *     @OA\Response(
@@ -50,12 +50,20 @@ class ProductController extends Controller
      *     )
      * )
      */
-    public function index(): JsonResponse
+    public function index(Request $request): JsonResponse
     {
         try {
-            return $this->responseSuccess($this->productRepository->getAll(), 'Product fetched successfully.');
+            return $this->responseSuccess(
+                $this->productRepository
+                    ->getAll($request->perPage),
+                'Product fetched successfully.'
+            );
         } catch (Exception $e) {
-            return $this->responseError(null, 'Something went wrong.', $e->getMessage());
+            return $this->responseError(
+                null,
+                'Something went wrong.',
+                $e->getMessage()
+            );
         }
     }
 

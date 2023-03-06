@@ -8,9 +8,9 @@ use Illuminate\Contracts\Pagination\Paginator;
 
 class ProductRepository implements ProductRepositoryInterface
 {
-    public function getAll(): Paginator
+    public function getAll(int $perPage = 10): Paginator
     {
-        return Product::paginate(10);
+        return Product::paginate($perPage);
     }
     public function getById($id): Product
     {
