@@ -2,10 +2,13 @@
 
 namespace App\Http\Middleware;
 
+use App\Traits\ResponseTrait;
 use Illuminate\Auth\Middleware\Authenticate as Middleware;
+use Illuminate\Http\Exceptions\HttpResponseException;
 
 class Authenticate extends Middleware
 {
+    use ResponseTrait;
     /**
      * Get the path the user should be redirected to when they are not authenticated.
      *
@@ -14,8 +17,28 @@ class Authenticate extends Middleware
      */
     protected function redirectTo($request)
     {
-        if (! $request->expectsJson()) {
+        if (!$request->expectsJson()) {
             return route('login');
         }
+    }
+
+    /**
+     * Handle an unauthenticated user.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  array  $guards
+     * @return void
+     *
+     * @throws \Illuminate\Auth\AuthenticationException
+     */
+    protected function unauthenticated($request, array $guards)
+    {
+        throw new HttpResponseException(
+            $this->responseError(
+                null,
+                'Something went wrong.',
+                'Unauthenticated, access denied.'
+            )
+        );
     }
 }

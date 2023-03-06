@@ -8,3 +8,9 @@
 
 #### To Generate Documentation
 - php artisan l5-swagger:generate
+- php artisan passport:install
+
+
+
+# Help
+- https://github.com/DarkaOnLine/L5-Swagger [API Documentation Package]
