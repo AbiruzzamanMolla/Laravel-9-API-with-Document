@@ -15,9 +15,7 @@ class ProductController extends Controller
 {
     use ResponseTrait;
 
-    public $productRepository;
-
-    public function __construct(ProductRepository $productRepository)
+    public function __construct(public ProductRepository $productRepository)
     {
         $this->productRepository = $productRepository;
     }

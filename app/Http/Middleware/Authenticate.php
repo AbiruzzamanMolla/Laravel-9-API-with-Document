@@ -37,7 +37,8 @@ class Authenticate extends Middleware
             $this->responseError(
                 null,
                 'Something went wrong.',
-                'Unauthenticated, access denied.'
+                'Unauthenticated, access denied.',
+                401
             )
         );
     }
