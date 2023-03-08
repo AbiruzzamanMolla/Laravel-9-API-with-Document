@@ -34,6 +34,23 @@ class AuthRepository
         return $this->getAuthData($user, $createToken);
     }
 
+    public function register(array $data): array
+    {
+        $user = $this->getUserByEmail($data['email']);
+
+        if (!$user) {
+            throw new Exception('Sorry, user does not exist', 404);
+        }
+        // check user password match or not
+        if (!$this->isValidPassword($user, $data)) {
+            throw new Exception('Sorry, password does not matched.', 401);
+        }
+
+        $createToken = $this->createAuthToken($user);
+
+        return $this->getAuthData($user, $createToken);
+    }
+
     /**
      * @param string $email
      *

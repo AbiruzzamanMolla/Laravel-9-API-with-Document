@@ -2,12 +2,13 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\LoginRequest;
+use App\Http\Requests\RegisterRequest;
 use App\Repositories\AuthRepository;
 use App\Traits\ResponseTrait;
 use Exception;
+use Illuminate\Http\Request;
 
-class LoginController extends Controller
+class RegisterController extends Controller
 {
     use ResponseTrait;
 
@@ -16,13 +17,13 @@ class LoginController extends Controller
         $this->authRepository = $authRepository;
     }
 
-    public function login(LoginRequest $request)
+    public function register(RegisterRequest $request)
     {
         try {
-            $data = $this->authRepository->login($request->all());
+            $data = $this->authRepository->register($request->all());
             return $this->responseSuccess(
                 $data,
-                'Logged in successfully.'
+                'User Created successfully.'
             );
         } catch (Exception $e) {
             return $this->responseError(

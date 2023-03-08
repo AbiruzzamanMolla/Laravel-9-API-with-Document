@@ -2,10 +2,7 @@
 
 namespace App\Http\Requests;
 
-use App\Traits\ResponseTrait;
-use Illuminate\Foundation\Http\FormRequest;
-
-class LoginRequest extends ApiFormRequest
+class RegisterRequest extends ApiFormRequest
 {
     /**
      * Get the validation rules that apply to the request.
@@ -15,8 +12,9 @@ class LoginRequest extends ApiFormRequest
     public function rules()
     {
         return [
-            'email' => 'required|email|max:100',
-            'password' => 'required|min:6',
+            'name' => 'required|string|max:50',
+            'email' => 'required|email|max:100|unique:users,email',
+            'password' => 'required|min:6|confirmed',
         ];
     }
 }

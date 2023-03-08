@@ -12,6 +12,16 @@ class ApiFormRequest extends FormRequest
     use ResponseTrait;
 
     /**
+     * Determine if the user is authorized to make this request.
+     *
+     * @return bool
+     */
+    public function authorize()
+    {
+        return true;
+    }
+
+    /**
      * @param Validator $validator
      *
      * @return array
