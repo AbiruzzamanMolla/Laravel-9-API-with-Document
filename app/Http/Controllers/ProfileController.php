@@ -13,7 +13,22 @@ class ProfileController extends Controller
     use ResponseTrait;
 
     /**
-     * @return JsonResponse
+     * @OA\Get(
+     *     path="/api/profile",
+     *     tags={"Authentication"},
+     *     summary="Get user profile information",
+     *     description="Get logged in user profile information",
+     *     operationId="show",
+     *     security={{ "bearer":{} }},
+     *     @OA\Response(
+     *         response=200,
+     *         description="successful operation"
+     *     ),
+     *     @OA\Response(
+     *         response=401,
+     *         description="Unauthorized"
+     *     )
+     * )
      */
     public function show(): JsonResponse
     {
@@ -33,7 +48,22 @@ class ProfileController extends Controller
     }
 
     /**
-     * @return JsonResponse
+     * @OA\Post(
+     *     path="/api/logout",
+     *     tags={"Authentication"},
+     *     summary="User logout",
+     *     description="Logout",
+     *     operationId="logout",
+     *     security={{ "bearer":{} }},
+     *     @OA\Response(
+     *         response=200,
+     *         description="successful operation"
+     *     ),
+     *     @OA\Response(
+     *         response=401,
+     *         description="Unauthorized"
+     *     )
+     * )
      */
     public function logout(): JsonResponse
     {
