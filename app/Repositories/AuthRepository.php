@@ -34,16 +34,17 @@ class AuthRepository
         return $this->getAuthData($user, $createToken);
     }
 
+    /**
+     * @param array $data
+     *
+     * @return array
+     */
     public function register(array $data): array
     {
-        $user = $this->getUserByEmail($data['email']);
+        $user = User::create($this->prepareDataForRegistation($data));
 
         if (!$user) {
-            throw new Exception('Sorry, user does not exist', 404);
-        }
-        // check user password match or not
-        if (!$this->isValidPassword($user, $data)) {
-            throw new Exception('Sorry, password does not matched.', 401);
+            throw new Exception('Sorry, user registation failed!', 500);
         }
 
         $createToken = $this->createAuthToken($user);
@@ -95,6 +96,20 @@ class AuthRepository
             'access_token' => $createToken->accessToken,
             'token_type' => 'Bearer',
             'expires_at' => Carbon::parse($createToken->token->expires_at)->toDateTimeString(),
+        ];
+    }
+
+    /**
+     * @param array $data
+     *
+     * @return array
+     */
+    public function prepareDataForRegistation(array $data): array
+    {
+        return [
+            'name' => $data['name'],
+            'email' => $data['email'],
+            'password' => Hash::make($data['password']),
         ];
     }
 }
