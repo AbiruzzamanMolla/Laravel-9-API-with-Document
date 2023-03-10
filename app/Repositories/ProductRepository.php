@@ -15,9 +15,34 @@ class ProductRepository implements ProductRepositoryInterface, ProductCreateRepo
      *
      * @return Paginator
      */
-    public function getAll(?int $perPage = 10): Paginator
+    public function getAll(?array $filterData): Paginator
     {
-        return Product::paginate($perPage);
+        $filter = $this->getFilterData($filterData);
+
+        $query = Product::orderBy($filter['orderBy'], $filter['order']);
+
+        if (!empty($filter['search'])) {
+            $query->where(function ($query) use ($filter) {
+                $keyword = $filter['search'];
+                $query->where('title', 'like', "%{$keyword}%")
+                    ->orWhere('slug', 'like', "%{$keyword}%");
+            });
+        }
+
+        return $query->paginate($filter['perPage']);
+    }
+
+
+    public function getFilterData(array $filterData): array
+    {
+        $defaultPerms = [
+            'perPage' => 10,
+            'search' => '',
+            'orderBy' => 'id',
+            'order' => 'desc',
+        ];
+
+        return array_merge($defaultPerms, $filterData);
     }
 
     /**

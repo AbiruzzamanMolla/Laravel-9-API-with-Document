@@ -40,6 +40,38 @@ class ProductController extends Controller
      *             type="integer",
      *         )
      *     ),
+     *     @OA\Parameter(
+     *         name="search",
+     *         in="query",
+     *         description="Search by title",
+     *         required=false,
+     *         explode=true,
+     *         @OA\Schema(
+     *             type="string",
+     *         )
+     *     ),
+     *     @OA\Parameter(
+     *         name="orderBy",
+     *         in="query",
+     *         description="Order by column name",
+     *         required=false,
+     *         explode=true,
+     *         @OA\Schema(
+     *             default="id",
+     *             type="string",
+     *         )
+     *     ),
+     *     @OA\Parameter(
+     *         name="order",
+     *         in="query",
+     *         description="Order by assending and descending order",
+     *         required=false,
+     *         explode=true,
+     *         @OA\Schema(
+     *             default="desc",
+     *             type="string",
+     *         )
+     *     ),
      *     security={{ "bearer":{} }},
      *     @OA\Response(
      *         response=200,
@@ -54,9 +86,10 @@ class ProductController extends Controller
     public function index(Request $request): JsonResponse
     {
         try {
+            $data = $this->productRepository->getAll($request->all());
+
             return $this->responseSuccess(
-                $this->productRepository
-                    ->getAll($request->perPage),
+                $data,
                 'Product fetched successfully.'
             );
         } catch (Exception $e) {

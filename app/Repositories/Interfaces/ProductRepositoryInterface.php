@@ -6,7 +6,7 @@ use Illuminate\Contracts\Pagination\Paginator;
 
 interface ProductRepositoryInterface
 {
-    public function getAll(int $perPage): Paginator;
+    public function getAll(array $filterData): Paginator;
 
     public function getById(int $id): object|null;
 
