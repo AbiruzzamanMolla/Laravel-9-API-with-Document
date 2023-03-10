@@ -3,7 +3,6 @@
 namespace App\Repositories\Interfaces;
 
 use App\Models\Product;
-use Illuminate\Contracts\Pagination\Paginator;
 
 interface ProductCreateRepositoryInterface
 {

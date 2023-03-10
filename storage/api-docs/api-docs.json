@@ -189,7 +189,115 @@
                     {
                         "name": "id",
                         "in": "path",
-                        "description": "Enter product slug",
+                        "description": "Enter product id",
+                        "required": true,
+                        "explode": true,
+                        "schema": {
+                            "type": "integer",
+                            "default": ""
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation"
+                    },
+                    "404": {
+                        "description": "Product not found"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Products"
+                ],
+                "summary": "Update Product",
+                "description": "Update existing product",
+                "operationId": "b4b789a4a3d0c47897f43991a5f12372",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Enter product id",
+                        "required": true,
+                        "explode": true,
+                        "schema": {
+                            "type": "integer",
+                            "default": ""
+                        }
+                    },
+                    {
+                        "name": "_method",
+                        "in": "query",
+                        "description": "Method",
+                        "required": true,
+                        "explode": true,
+                        "schema": {
+                            "type": "string",
+                            "default": "PUT"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "required": [
+                                    "title",
+                                    "price"
+                                ],
+                                "properties": {
+                                    "title": {
+                                        "description": "Product Title",
+                                        "type": "string"
+                                    },
+                                    "price": {
+                                        "description": "Product price",
+                                        "type": "number"
+                                    },
+                                    "image": {
+                                        "description": "Product Image",
+                                        "type": "string",
+                                        "format": "binary"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "successful operation"
+                    },
+                    "400": {
+                        "description": "Invalid input parameters"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Products"
+                ],
+                "summary": "Delete a product",
+                "description": "Delete the product",
+                "operationId": "e80a6ca46716acee6b47ea1ac91663c0",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Enter product id",
                         "required": true,
                         "explode": true,
                         "schema": {

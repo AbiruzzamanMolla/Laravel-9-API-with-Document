@@ -5,12 +5,16 @@ namespace App\Repositories;
 use App\Models\Product;
 use App\Repositories\Interfaces\ProductCreateRepositoryInterface;
 use App\Repositories\Interfaces\ProductRepositoryInterface;
+use App\Repositories\Interfaces\ProductUpdateRepositoryInterface;
 use Exception;
 use Illuminate\Contracts\Pagination\Paginator;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
+use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\Log;
 
-class ProductRepository implements ProductRepositoryInterface, ProductCreateRepositoryInterface
+class ProductRepository implements ProductRepositoryInterface, ProductCreateRepositoryInterface, ProductUpdateRepositoryInterface
 {
     /**
      * @param int|null $perPage
@@ -112,7 +116,7 @@ class ProductRepository implements ProductRepositoryInterface, ProductCreateRepo
             $this->insertSlug($product, $data['slug']);
         }
         // upload image
-        $this->uploadImage($product, $data['image']);
+        if ($data['image']) $this->uploadImage($product, $data['image']);
 
         return $product;
     }
@@ -135,7 +139,7 @@ class ProductRepository implements ProductRepositoryInterface, ProductCreateRepo
      */
     public function insertSlug(Product $product, string $slug): ?string
     {
-        return $product->slug =  Str::slug($slug);
+        return $product->slug =  Str::slug($slug, '-');
     }
 
     /**
@@ -149,5 +153,72 @@ class ProductRepository implements ProductRepositoryInterface, ProductCreateRepo
         $imageName = time() . '_' . $image->getClientOriginalName();
         $image->storePubliclyAs('public', $imageName);
         return $product->image =  $imageName;
+    }
+
+    /**
+     * @param int $id
+     * @param array $data
+     *
+     * @return Product|null
+     */
+    public function update(int $id, array $data): ?Product
+    {
+        $product = $this->getById($id);
+
+        $this->updateData($product, $data);
+
+        if (!empty($data['image'])) {
+            $this->deleteExistingImage($product);
+            $this->uploadImage($product, $data['image']);
+        }
+
+        if (!$product->save()) {
+            throw new Exception('Product updating failed.', Response::HTTP_INTERNAL_SERVER_ERROR);
+        };
+
+        return $product;
+    }
+
+    /**
+     * @param Product $product
+     * @param array $data
+     *
+     * @return Product|null
+     */
+    public function updateData(Product $product, array $data): ?Product
+    {
+        return $product->fill(Arr::except($data, ['image']));
+    }
+
+    /**
+     * @param Product $product
+     *
+     * @return bool
+     */
+    public function deleteExistingImage(Product $product): bool
+    {
+        if (!empty($product->image) && Storage::exists('public/' . $product->image)) {
+            return Storage::delete('public/' . $product->image);
+        }
+    }
+
+    /**
+     * @param int $id
+     *
+     * @return Product|null
+     */
+    public function delete(int $id): ?Product
+    {
+        $product = $this->getById($id);
+
+        $this->deleteExistingImage($product);
+
+        $deleted = $product->delete();
+
+        if (!$deleted) {
+            throw new Exception('Product deleting failed.', Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+
+        return $product;
     }
 }

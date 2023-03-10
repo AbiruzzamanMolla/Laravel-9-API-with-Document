@@ -180,7 +180,7 @@ class ProductController extends Controller
      *     @OA\Parameter(
      *         name="id",
      *         in="path",
-     *         description="Enter product slug",
+     *         description="Enter product id",
      *         required=true,
      *         explode=true,
      *         @OA\Schema(
@@ -219,25 +219,133 @@ class ProductController extends Controller
     }
 
     /**
-     * Update the specified resource in storage.
-     *
-     * @param  \App\Http\Requests\UpdateProductRequest  $request
-     * @param  \App\Models\Product  $product
-     * @return \Illuminate\Http\Response
+     * @OA\Post(
+     *     path="/api/products/{id}",
+     *     tags={"Products"},
+     *     summary="Update Product",
+     *     description="Update existing product",
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         description="Enter product id",
+     *         required=true,
+     *         explode=true,
+     *         @OA\Schema(
+     *             default="",
+     *             type="integer",
+     *         )
+     *     ),
+     *     @OA\Parameter(
+     *         name="_method",
+     *         in="query",
+     *         description="Method",
+     *         required=true,
+     *         explode=true,
+     *         @OA\Schema(
+     *             default="PUT",
+     *             type="string",
+     *         )
+     *     ),
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\MediaType(
+     *             mediaType="multipart/form-data",
+     *             @OA\Schema(
+     *                 type="object",
+     *                 @OA\Property(
+     *                     property="title",
+     *                     description="Product Title",
+     *                     type="string",
+     *                 ),
+     *                 @OA\Property(
+     *                     property="price",
+     *                     description="Product price",
+     *                     type="number",
+     *                 ),
+     *                 @OA\Property(
+     *                     property="image",
+     *                     description="Product Image",
+     *                     type="string",
+     *                     format="binary",
+     *                 ),
+     *                required={"title", "price"}
+     *             )
+     *         )
+     *     ),
+     *     security={{ "bearer":{} }},
+     *     @OA\Response(
+     *         response=200,
+     *         description="successful operation"
+     *     ),
+     *     @OA\Response(
+     *         response=400,
+     *         description="Invalid input parameters"
+     *     )
+     * )
      */
-    public function update(UpdateProductRequest $request, Product $product)
+    public function update(UpdateProductRequest $request, int $id)
     {
-        //
+        try {
+            $product = $this->productRepository->update($id, $request->all());
+            $data = new ProductResource($product);
+            return $this->responseSuccess(
+                $data,
+                'Product updated successfully.'
+            );
+        } catch (Exception $e) {
+            return $this->responseError(
+                null,
+                'Something went wrong.',
+                $e->getMessage(),
+                $e->getCode(),
+            );
+        }
     }
 
     /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Models\Product  $product
-     * @return \Illuminate\Http\Response
+     * @OA\Delete(
+     *     path="/api/products/{id}",
+     *     tags={"Products"},
+     *     summary="Delete a product",
+     *     description="Delete the product",
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         description="Enter product id",
+     *         required=true,
+     *         explode=true,
+     *         @OA\Schema(
+     *             default="",
+     *             type="integer",
+     *         )
+     *     ),
+     *     security={{ "bearer":{} }},
+     *     @OA\Response(
+     *         response=200,
+     *         description="successful operation"
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="Product not found"
+     *     )
+     * )
      */
-    public function destroy(Product $product)
+    public function destroy(int $id)
     {
-        //
+        try {
+            $product = $this->productRepository->delete($id);
+            $data = new ProductResource($product);
+            return $this->responseSuccess(
+                $data,
+                'Product deleted successfully.'
+            );
+        } catch (Exception $e) {
+            return $this->responseError(
+                null,
+                'Something went wrong.',
+                $e->getMessage(),
+                $e->getCode(),
+            );
+        }
     }
 }

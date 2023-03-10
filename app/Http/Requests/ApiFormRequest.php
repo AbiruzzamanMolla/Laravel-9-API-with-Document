@@ -6,6 +6,7 @@ use App\Traits\ResponseTrait;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Exceptions\HttpResponseException;
+use Illuminate\Http\Response;
 
 class ApiFormRequest extends FormRequest
 {
@@ -33,7 +34,7 @@ class ApiFormRequest extends FormRequest
                 null,
                 'Something went wrong.',
                 $validator->errors(),
-                403
+                Response::HTTP_BAD_REQUEST
             )
         );
     }

@@ -53,8 +53,22 @@ class Product extends Model
     public static function boot()
     {
         parent::boot();
+
         self::creating(function ($model) {
             $model->uuid = (string) Str::uuid()->toString();
+        });
+
+        self::updating(function ($model) {
+            $slug = Str::slug($model->title, '-');
+
+            $originalSlug = $slug;
+            $count = 2;
+
+            while (static::whereSlug($slug)->exists()) {
+                $slug = "{$originalSlug}-" . $count++;
+            }
+
+            $model->slug = $slug;
         });
     }
 }

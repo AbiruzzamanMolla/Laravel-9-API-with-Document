@@ -12,7 +12,7 @@
 - php artisan passport:keys
 - php artisan storage:link
 
-
+Check `Laravel 9 API.postman_collection.json` file to generate api in postman collection
 
 # Help
 - https://github.com/DarkaOnLine/L5-Swagger [API Documentation Package]
