@@ -10,7 +10,7 @@ interface ProductRepositoryInterface
 
     public function getById(int $id): object|null;
 
-    public function getByUuid(string $uuid): object|null;
+    public function getBySlug(string $slug): object|null;
 
     public function create(array $data): object|null;
 }

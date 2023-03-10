@@ -42,7 +42,8 @@ class ProfileController extends Controller
             return $this->responseError(
                 null,
                 'Something went wrong.',
-                $e->getMessage()
+                $e->getMessage(),
+                $e->getCode(),
             );
         }
     }
@@ -79,7 +80,8 @@ class ProfileController extends Controller
             return $this->responseError(
                 null,
                 'Something went wrong.',
-                $e->getMessage()
+                $e->getMessage(),
+                $e->getCode(),
             );
         }
     }

@@ -90,13 +90,14 @@ class ProductController extends Controller
 
             return $this->responseSuccess(
                 $data,
-                'Product fetched successfully.'
+                'Products fetched successfully.'
             );
         } catch (Exception $e) {
             return $this->responseError(
                 null,
                 'Something went wrong.',
-                $e->getMessage()
+                $e->getMessage(),
+                $e->getCode(),
             );
         }
     }
@@ -163,20 +164,58 @@ class ProductController extends Controller
             return $this->responseError(
                 null,
                 'Something went wrong.',
-                $e->getMessage()
+                $e->getMessage(),
+                $e->getCode(),
             );
         }
     }
 
+
     /**
-     * Display the specified resource.
-     *
-     * @param  \App\Models\Product  $product
-     * @return \Illuminate\Http\Response
+     * @OA\Get(
+     *     path="/api/products/{id}",
+     *     tags={"Products"},
+     *     summary="Get Product for restful api",
+     *     description="Get the product",
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         description="Enter product slug",
+     *         required=true,
+     *         explode=true,
+     *         @OA\Schema(
+     *             default="",
+     *             type="integer",
+     *         )
+     *     ),
+     *     security={{ "bearer":{} }},
+     *     @OA\Response(
+     *         response=200,
+     *         description="successful operation"
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="Product not found"
+     *     )
+     * )
      */
-    public function show(Product $product)
+    public function show(int $id): JsonResponse
     {
-        //
+        try {
+            $data = $this->productRepository->getById($id);
+            $product = new ProductResource($data);
+            return $this->responseSuccess(
+                $product,
+                'Product fetched successfully.'
+            );
+        } catch (Exception $e) {
+            return $this->responseError(
+                null,
+                'Something went wrong.',
+                $e->getMessage(),
+                $e->getCode(),
+            );
+        }
     }
 
     /**

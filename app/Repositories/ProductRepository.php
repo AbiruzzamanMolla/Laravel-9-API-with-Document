@@ -5,7 +5,9 @@ namespace App\Repositories;
 use App\Models\Product;
 use App\Repositories\Interfaces\ProductCreateRepositoryInterface;
 use App\Repositories\Interfaces\ProductRepositoryInterface;
+use Exception;
 use Illuminate\Contracts\Pagination\Paginator;
+use Illuminate\Http\Response;
 use Illuminate\Support\Str;
 
 class ProductRepository implements ProductRepositoryInterface, ProductCreateRepositoryInterface
@@ -50,9 +52,15 @@ class ProductRepository implements ProductRepositoryInterface, ProductCreateRepo
      *
      * @return Product|null
      */
-    public function getById($id): ?Product
+    public function getById(int $id): ?Product
     {
-        return Product::find($id);
+        $product =  Product::with('user')->find($id);
+
+        if (!$product) {
+            throw new Exception('Product not found.', Response::HTTP_NOT_FOUND);
+        }
+
+        return $product;
     }
 
     /**
@@ -60,9 +68,15 @@ class ProductRepository implements ProductRepositoryInterface, ProductCreateRepo
      *
      * @return Product|null
      */
-    public function getByUuid($uuid): ?Product
+    public function getBySlug($slug): ?Product
     {
-        return Product::whereUuid($uuid)->first();
+        $product =  Product::with('user')->where('slug', $slug)->first();
+
+        if ($product) {
+            throw new Exception('Product not found.', Response::HTTP_NOT_FOUND);
+        }
+
+        return $product;
     }
 
     /**

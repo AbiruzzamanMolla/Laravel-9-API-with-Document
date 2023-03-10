@@ -3,6 +3,7 @@
 namespace App\Traits;
 
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Response;
 
 trait ResponseTrait
 {
@@ -23,7 +24,7 @@ trait ResponseTrait
             'message' => $message,
             'data' => $data,
             'errors' => $errors,
-        ]);
+        ], $code);
     }
 
     /**
@@ -44,6 +45,6 @@ trait ResponseTrait
             'message' => $message,
             'data' => $data,
             'errors' => $errors,
-        ]);
+        ], $code);
     }
 }
