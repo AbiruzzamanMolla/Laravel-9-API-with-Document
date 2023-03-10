@@ -9,6 +9,8 @@
 #### To Generate Documentation
 - php artisan l5-swagger:generate
 - php artisan passport:install
+- php artisan passport:keys
+- php artisan storage:link
 
 
 

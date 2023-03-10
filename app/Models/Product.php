@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
 class Product extends Model
@@ -14,7 +15,16 @@ class Product extends Model
         'title',
         'price',
         'image',
+        'user_id',
     ];
+
+    protected $appends = ['image_url'];
+
+    public function getImageUrlAttribute()
+    {
+        if (!is_null($this->image)) return asset(Storage::url($this->image));
+        return asset('default/product-image.jpg');
+    }
 
     public function user()
     {

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreProductRequest;
 use App\Http\Requests\UpdateProductRequest;
+use App\Http\Resources\ProductResource;
 use App\Models\Product;
 use App\Repositories\ProductRepository;
 use App\Traits\ResponseTrait;
@@ -68,24 +69,70 @@ class ProductController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
+     * @OA\Post(
+     *     path="/api/products",
+     *     tags={"Products"},
+     *     summary="Create Product",
+     *     description="Create a new Product",
+     *     operationId="store",
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\MediaType(
+     *             mediaType="multipart/form-data",
+     *             @OA\Schema(
+     *                 type="object",
+     *                 @OA\Property(
+     *                     property="title",
+     *                     description="Product Title",
+     *                     type="string",
+     *                 ),
+     *                 @OA\Property(
+     *                     property="slug",
+     *                     description="Product unique slug",
+     *                     type="string",
+     *                 ),
+     *                 @OA\Property(
+     *                     property="price",
+     *                     description="Product price",
+     *                     type="number",
+     *                 ),
+     *                 @OA\Property(
+     *                     property="image",
+     *                     description="Product Image",
+     *                     type="string",
+     *                     format="binary",
+     *                 ),
+     *                required={"title", "price"}
+     *             )
+     *         )
+     *     ),
+     *     security={{ "bearer":{} }},
+     *     @OA\Response(
+     *         response=200,
+     *         description="successful operation"
+     *     ),
+     *     @OA\Response(
+     *         response=400,
+     *         description="Invalid input parameters"
+     *     )
+     * )
      */
-    public function create()
+    public function store(StoreProductRequest $request): JsonResponse
     {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \App\Http\Requests\StoreProductRequest  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(StoreProductRequest $request)
-    {
-        //
+        try {
+            $product = $this->productRepository->create($request->all());
+            $data = new ProductResource($product);
+            return $this->responseSuccess(
+                $data,
+                'Product created successfully.'
+            );
+        } catch (Exception $e) {
+            return $this->responseError(
+                null,
+                'Something went wrong.',
+                $e->getMessage()
+            );
+        }
     }
 
     /**
@@ -95,17 +142,6 @@ class ProductController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function show(Product $product)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\Product  $product
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(Product $product)
     {
         //
     }

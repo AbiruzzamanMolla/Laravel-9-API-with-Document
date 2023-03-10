@@ -89,6 +89,60 @@
                         "bearer": []
                     }
                 ]
+            },
+            "post": {
+                "tags": [
+                    "Products"
+                ],
+                "summary": "Create Product",
+                "description": "Create a new Product",
+                "operationId": "store",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "required": [
+                                    "title",
+                                    "price"
+                                ],
+                                "properties": {
+                                    "title": {
+                                        "description": "Product Title",
+                                        "type": "string"
+                                    },
+                                    "slug": {
+                                        "description": "Product unique slug",
+                                        "type": "string"
+                                    },
+                                    "price": {
+                                        "description": "Product price",
+                                        "type": "number"
+                                    },
+                                    "image": {
+                                        "description": "Product Image",
+                                        "type": "string",
+                                        "format": "binary"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "successful operation"
+                    },
+                    "400": {
+                        "description": "Invalid input parameters"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
             }
         },
         "/api/profile": {
